@@ -3,6 +3,10 @@ import { ChicagoCtaTransitAdapter } from './cities/chicago.js';
 import { MspTransitAdapter } from './cities/msp.js';
 import { PortlandTriMetTransitAdapter } from './cities/portland.js';
 import { SfBartTransitAdapter } from './cities/sf_bart.js';
+import { WmataTransitAdapter } from './cities/dc.js';
+import { MartaTransitAdapter } from './cities/atl.js';
+import { MiamiDadeTransitAdapter } from './cities/mia.js';
+import { WeGoNashvilleTransitAdapter } from './cities/bna.js';
 import { CityTransitAdapter, SupportedCityInfo } from './types.js';
 
 export class TransitRegistry {
@@ -15,6 +19,10 @@ export class TransitRegistry {
     this.register(new SfBartTransitAdapter());
     this.register(new ChicagoCtaTransitAdapter());
     this.register(new PortlandTriMetTransitAdapter());
+    this.register(new WmataTransitAdapter());
+    this.register(new MartaTransitAdapter());
+    this.register(new MiamiDadeTransitAdapter());
+    this.register(new WeGoNashvilleTransitAdapter());
   }
 
   register(adapter: CityTransitAdapter): void {

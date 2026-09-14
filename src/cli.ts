@@ -39,7 +39,7 @@ export function createCli(registry: TransitRegistry = new TransitRegistry()): Co
   program
     .command('routes [query]')
     .description('List transit routes for a specific city')
-    .requiredOption('-c, --city <city>', 'City identifier (e.g. msp, boston, sf_bart, chicago, portland)')
+    .requiredOption('-c, --city <city>', 'City identifier (e.g. msp, boston, sf_bart, chicago, portland, dc, atl, mia, bna)')
     .action(async (query: string | undefined, options: { city: string }) => {
       try {
         const adapter = registry.getAdapter(options.city);

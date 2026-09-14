@@ -1,6 +1,6 @@
 # transit-mcp 🚊
 
-> Multi-city US Public Transit **Model Context Protocol (MCP)** server & interactive **CLI** supporting **Minneapolis-St. Paul (Metro Transit)**, **Boston (MBTA)**, **SF Bay Area (BART)**, **Chicago (CTA)**, and **Portland (TriMet)**.
+> Multi-city US Public Transit **Model Context Protocol (MCP)** server & interactive **CLI** supporting **9 major metro areas**: **Minneapolis-St. Paul (Metro Transit)**, **Boston (MBTA)**, **SF Bay Area (BART)**, **Chicago (CTA)**, **Portland (TriMet)**, **Washington D.C. (WMATA)**, **Atlanta (MARTA)**, **Miami (Miami-Dade Transit)**, and **Nashville (WeGo)**.
 
 Connect any AI assistant (Claude Desktop, Cursor, Antigravity, Claude Code, Windsurf) to live public transit schedules, real-time vehicle countdowns, platform assignments, route stops, and active service disruption alerts.
 
@@ -15,6 +15,10 @@ Connect any AI assistant (Claude Desktop, Cursor, Antigravity, Claude Code, Wind
 | **SF Bay Area** | `sf_bart` | BART | Heavy Rail / Rapid Transit, OAK Airport Automated Connector | ✅ Live ETD | ✅ Live BSA | Open REST API with universal key |
 | **Chicago** | `chicago` | CTA | "L" Subway & Elevated (Red, Blue, Brown, Green, Orange, Purple, Pink, Yellow), Bus | ✅ Headway / Live | ✅ Live XML | Open alerts & system feeds (`transitchicago.com`) |
 | **Portland** | `portland` | TriMet | MAX Light Rail (Blue, Green, Red, Yellow, Orange), Streetcar, WES, Bus | ✅ Headway / Live | ✅ Live | Public TriMet feeds (`developer.trimet.org`) |
+| **Washington D.C.** | `dc` | WMATA | Metrorail (Red, Blue, Orange, Silver, Green, Yellow), Metrobus | ✅ Live / Scheduled | ✅ Live Incidents | WMATA API (`api.wmata.com`) |
+| **Atlanta** | `atl` | MARTA | Heavy Rail (Red, Gold, Blue, Green), Atlanta Streetcar, Bus | ✅ Live / Scheduled | ✅ Live | MARTA Realtime API (`itsmarta.com`) |
+| **Miami** | `mia` | Miami-Dade Transit | Metrorail (Orange, Green), Metromover (Inner, Omni, Brickell loops), Metrobus | ✅ Scheduled Headways | ✅ Live | MDT Open Data feeds (`miamidade.gov`) |
+| **Nashville** | `bna` | WeGo Public Transit | WeGo Star Commuter Rail, BRT Lite Corridors (55, 56), WeGo Bus | ✅ Scheduled Headways | ✅ Live | WeGo Public Transit (`wegotransit.com`) |
 
 ---
 
@@ -163,6 +167,18 @@ transit routes --city chicago
 
 # Search for BART routes in the SF Bay Area
 transit routes --city sf_bart
+
+# Search for Metrorail lines in Washington D.C.
+transit routes --city dc
+
+# Search for MARTA rail in Atlanta
+transit routes --city atl Red
+
+# Search for Metromover loops in Miami
+transit routes --city mia Mover
+
+# Search for WeGo Star in Nashville
+transit routes --city bna Star
 ```
 
 ### 3. `transit departures --city <city> <stop>`
@@ -182,6 +198,18 @@ transit departures --city chicago 40380
 
 # Portland Pioneer Courthouse Square
 transit departures --city portland 8334
+
+# Washington D.C. Metro Center WMATA Station
+transit departures --city dc A01
+
+# Atlanta Airport MARTA Station
+transit departures --city atl AIR
+
+# Miami Government Center Metrorail/Metromover Station
+transit departures --city mia GOVT
+
+# Nashville Riverfront Commuter Rail Station
+transit departures --city bna RIV
 ```
 
 ### 4. `transit alerts --city <city> [route]`
@@ -190,6 +218,8 @@ Check active service advisories:
 transit alerts --city sf_bart
 transit alerts --city chicago red
 transit alerts --city boston Green
+transit alerts --city dc RD
+transit alerts --city atl
 ```
 
 ### 5. `transit mcp`
@@ -207,6 +237,8 @@ All supported cities function out-of-the-box using official public endpoints. Fo
 | `MBTA_API_KEY` | MBTA (Boston) | Higher rate limits for MBTA v3 REST API | None (Open access) |
 | `CTA_TRAIN_API_KEY` | CTA (Chicago) | Direct CTA Train Tracker GPS hardware feed | None (Uses scheduled headways + open XML alerts) |
 | `TRIMET_APP_ID` | TriMet (Portland) | Direct developer.trimet.org live arrivals feed | None (Uses scheduled headways + open feeds) |
+| `WMATA_API_KEY` | WMATA (DC) | Direct WMATA Developer API key | None (Uses scheduled headways & public advisories) |
+| `MARTA_API_KEY` | MARTA (Atlanta) | Direct MARTA Realtime REST API key | None (Uses scheduled headways & public feeds) |
 
 ---
 
@@ -225,8 +257,12 @@ transit-mcp/
 │       ├── boston.ts         # Boston (MBTA v3 REST API)
 │       ├── sf_bart.ts        # SF Bay Area (BART REST API)
 │       ├── chicago.ts        # Chicago (CTA open XML alerts & 'L' system)
-│       └── portland.ts       # Portland (TriMet MAX & Streetcar)
-├── test/                     # Vitest comprehensive unit & MCP test suite
+│       ├── portland.ts       # Portland (TriMet MAX & Streetcar)
+│       ├── dc.ts             # Washington D.C. (WMATA Metrorail & Metrobus)
+│       ├── atl.ts            # Atlanta (MARTA Rail & Streetcar)
+│       ├── mia.ts            # Miami (Miami-Dade Metrorail & Metromover)
+│       └── bna.ts            # Nashville (WeGo Star & BRT Lite)
+├── test/                     # Vitest comprehensive unit & MCP test suite (100% coverage)
 ├── package.json
 └── tsconfig.json
 ```

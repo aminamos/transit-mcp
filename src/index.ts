@@ -12,6 +12,10 @@ export * from './cities/boston.js';
 export * from './cities/sf_bart.js';
 export * from './cities/chicago.js';
 export * from './cities/portland.js';
+export * from './cities/dc.js';
+export * from './cities/atl.js';
+export * from './cities/mia.js';
+export * from './cities/bna.js';
 
 export async function main() {
   const args = process.argv.slice(2);

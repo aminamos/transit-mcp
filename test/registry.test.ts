@@ -5,16 +5,20 @@ import { SUPPORTED_CITY_IDS } from '../src/types.js';
 describe('TransitRegistry', () => {
   const registry = new TransitRegistry();
 
-  it('should list 5 supported cities', () => {
+  it('should list 9 supported cities', () => {
     const cities = registry.listSupportedCities();
-    expect(cities).toHaveLength(5);
+    expect(cities).toHaveLength(9);
     const ids = cities.map((c) => c.id);
     expect(ids).toContain('msp');
+    expect(ids).toContain('dc');
+    expect(ids).toContain('atl');
+    expect(ids).toContain('mia');
+    expect(ids).toContain('bna');
     expect(ids).toContain('boston');
     expect(ids).toContain('sf_bart');
     expect(ids).toContain('chicago');
     expect(ids).toContain('portland');
-    expect(SUPPORTED_CITY_IDS).toHaveLength(5);
+    expect(SUPPORTED_CITY_IDS).toHaveLength(9);
   });
 
   it('should resolve city by exact ID', () => {

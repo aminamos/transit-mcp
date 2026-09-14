@@ -37,8 +37,8 @@ describe('Transit MCP Server', () => {
     expect(res.isError).toBeFalsy();
     const text = (res.content[0] as any).text;
     const cities = JSON.parse(text);
-    expect(cities).toHaveLength(5);
-    expect(cities.map((c: any) => c.id)).toEqual(['msp', 'boston', 'sf_bart', 'chicago', 'portland']);
+    expect(cities).toHaveLength(9);
+    expect(cities.map((c: any) => c.id)).toEqual(['msp', 'boston', 'sf_bart', 'chicago', 'portland', 'dc', 'atl', 'mia', 'bna']);
 
     await client.close();
     await server.close();
