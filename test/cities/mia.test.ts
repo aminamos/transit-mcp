@@ -5,12 +5,16 @@ describe('MiamiDadeTransitAdapter', () => {
   it('should list and filter Miami Metrorail, Metromover, and Metrobus routes', async () => {
     const adapter = new MiamiDadeTransitAdapter();
     const allRoutes = await adapter.getRoutes();
-    expect(allRoutes.length).toBeGreaterThan(5);
+    expect(allRoutes.length).toBeGreaterThanOrEqual(80);
 
     const orange = allRoutes.find((r) => r.id === 'Orange');
     expect(orange).toBeDefined();
     expect(orange?.type).toBe('subway');
     expect(orange?.description).toContain('Airport');
+
+    const bus38 = allRoutes.find((r) => r.id === '38');
+    expect(bus38).toBeDefined();
+    expect(bus38?.type).toBe('bus');
 
     const mover = allRoutes.find((r) => r.id === 'Inner');
     expect(mover).toBeDefined();

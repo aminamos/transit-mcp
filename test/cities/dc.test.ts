@@ -5,12 +5,16 @@ describe('WmataTransitAdapter', () => {
   it('should list and filter WMATA lines and bus routes', async () => {
     const adapter = new WmataTransitAdapter();
     const allRoutes = await adapter.getRoutes();
-    expect(allRoutes.length).toBeGreaterThan(5);
+    expect(allRoutes.length).toBeGreaterThanOrEqual(80);
 
     const redLine = allRoutes.find((r) => r.id === 'RD');
     expect(redLine).toBeDefined();
     expect(redLine?.shortName).toBe('Red');
     expect(redLine?.type).toBe('subway');
+
+    const bus70 = allRoutes.find((r) => r.id === '70');
+    expect(bus70).toBeDefined();
+    expect(bus70?.type).toBe('bus');
 
     const filtered = await adapter.getRoutes('silver');
     expect(filtered.length).toBeGreaterThanOrEqual(1);

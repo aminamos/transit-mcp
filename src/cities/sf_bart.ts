@@ -53,7 +53,7 @@ export class SfBartTransitAdapter implements CityTransitAdapter {
       serviceAlerts: true,
       requiresApiKey: false,
     },
-    notes: 'BART open REST API (api.bart.gov). Uses universal public key MW9S-E7SL-26DU-VV8V.',
+    notes: 'BART open REST API (api.bart.gov) with universal key MW9S-E7SL-26DU-VV8V. Note: BART is a regional heavy rail operator; municipal Bay Area bus systems (SF Muni, AC Transit, VTA) are separate agencies not currently included.',
     aliases: ['sf', 'bayarea', 'bart', 'sanfrancisco', 'oakland', 'berkeley'],
   };
 

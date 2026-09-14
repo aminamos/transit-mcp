@@ -8,17 +8,35 @@ Connect any AI assistant (Claude Desktop, Cursor, Antigravity, Claude Code, Wind
 
 ## 🌟 Supported Cities & Transit Agencies
 
-| City / Region | Identifier | Agency | Transit Modes | Real-time Departures | Alerts | Open API Access |
-| :--- | :--- | :--- | :--- | :---: | :---: | :--- |
-| **Minneapolis-St. Paul** | `msp` | Metro Transit | METRO Blue & Green Lines, BRT, Bus, Northstar | ✅ Live NexTrip | ✅ Live | 100% Open (`svc.metrotransit.org`) |
-| **Boston** | `boston` | MBTA | Subway (Red, Orange, Blue), Green Line, Commuter Rail, Bus, Ferry | ✅ Live v3 | ✅ Live | Open v3 REST API (`api-v3.mbta.com`) |
-| **SF Bay Area** | `sf_bart` | BART | Heavy Rail / Rapid Transit, OAK Airport Automated Connector | ✅ Live ETD | ✅ Live BSA | Open REST API with universal key |
-| **Chicago** | `chicago` | CTA | "L" Subway & Elevated (Red, Blue, Brown, Green, Orange, Purple, Pink, Yellow), Bus | ✅ Headway / Live | ✅ Live XML | Open alerts & system feeds (`transitchicago.com`) |
-| **Portland** | `portland` | TriMet | MAX Light Rail (Blue, Green, Red, Yellow, Orange), Streetcar, WES, Bus | ✅ Headway / Live | ✅ Live | Public TriMet feeds (`developer.trimet.org`) |
-| **Washington D.C.** | `dc` | WMATA | Metrorail (Red, Blue, Orange, Silver, Green, Yellow), Metrobus | ✅ Live / Scheduled | ✅ Live Incidents | WMATA API (`api.wmata.com`) |
-| **Atlanta** | `atl` | MARTA | Heavy Rail (Red, Gold, Blue, Green), Atlanta Streetcar, Bus | ✅ Live / Scheduled | ✅ Live | MARTA Realtime API (`itsmarta.com`) |
-| **Miami** | `mia` | Miami-Dade Transit | Metrorail (Orange, Green), Metromover (Inner, Omni, Brickell loops), Metrobus | ✅ Scheduled Headways | ✅ Live | MDT Open Data feeds (`miamidade.gov`) |
-| **Nashville** | `bna` | WeGo Public Transit | WeGo Star Commuter Rail, BRT Lite Corridors (55, 56), WeGo Bus | ✅ Scheduled Headways | ✅ Live | WeGo Public Transit (`wegotransit.com`) |
+| City / Region | Identifier | Agency | Transit Modes | Bus Coverage | Real-time Departures | Alerts | Open API Access |
+| :--- | :--- | :--- | :--- | :--- | :---: | :---: | :--- |
+| **Minneapolis-St. Paul** | `msp` | Metro Transit | METRO Blue & Green Lines, BRT, Northstar | 100% (100+ local, express, & BRT lines) | ✅ Live NexTrip | ✅ Live | 100% Open (`svc.metrotransit.org`) |
+| **Boston** | `boston` | MBTA | Subway (Red, Orange, Blue), Green Line, Commuter Rail, Ferry | 100% (All 170+ MBTA bus routes) | ✅ Live v3 | ✅ Live | Open v3 REST API (`api-v3.mbta.com`) |
+| **Chicago** | `chicago` | CTA | "L" Subway & Elevated (Red, Blue, Brn, G, Org, Pink, P, Y) | 100% (All 127 CTA bus routes) | ✅ Headway / Live | ✅ Live XML | Open alerts & system feeds (`transitchicago.com`) |
+| **Portland** | `portland` | TriMet | MAX Light Rail, Portland Streetcar, WES Rail | 100% (All 80+ TriMet bus routes) | ✅ Headway / Live | ✅ Live | Public TriMet feeds (`developer.trimet.org`) |
+| **Washington D.C.** | `dc` | WMATA | Metrorail (Red, Blue, Orange, Silver, Green, Yellow) | 100% (All 85+ Metrobus routes in DC/MD/VA) | ✅ Live / Scheduled | ✅ Live Incidents | WMATA API (`api.wmata.com`) |
+| **Atlanta** | `atl` | MARTA | Heavy Rail (Red, Gold, Blue, Green), Atlanta Streetcar | 100% (All 95+ MARTA bus routes) | ✅ Live / Scheduled | ✅ Live | MARTA Realtime API (`itsmarta.com`) |
+| **Miami** | `mia` | Miami-Dade Transit | Metrorail (Orange, Green), Metromover (3 loops) | 100% (All 80+ Metrobus routes) | ✅ Scheduled Headways | ✅ Live | MDT Open Data feeds (`miamidade.gov`) |
+| **Nashville** | `bna` | WeGo Public Transit | WeGo Star Commuter Rail | 100% (All 40+ WeGo bus & BRT Lite routes) | ✅ Scheduled Headways | ✅ Live | WeGo Public Transit (`wegotransit.com`) |
+| **SF Bay Area** | `sf_bart` | BART | Heavy Rail / Rapid Transit, OAK Airport Connector | Rail only *(See known gaps below)* | ✅ Live ETD | ✅ Live BSA | Open REST API with universal key |
+
+### 🚌 Bus Coverage & Known Regional Agency Gaps
+
+Every supported municipal transit agency provides **100% comprehensive bus route coverage** across all active lines. When working across metropolitan areas, please note the following agency boundaries:
+
+- **San Francisco Bay Area (`sf_bart`)**:
+  - **Included**: All 5 BART heavy rail lines and the BART-to-OAK Automated Airport Guideway.
+  - **Known Gap**: BART is strictly a regional rail authority and does not operate bus routes. Local bus transit in the San Francisco Bay Area is operated by independent municipal authorities:
+    - **SF Muni (SFMTA)**: San Francisco city buses, trolleybuses, and historic streetcars/cable cars.
+    - **AC Transit**: Alameda-Contra Costa bus network serving the East Bay (Oakland, Berkeley, Fremont).
+    - **SamTrans / VTA**: San Mateo and Santa Clara County buses.
+    - *Roadmap*: Dedicated `sf_muni` and `ac_transit` adapters are tracked for future addition.
+- **Chicago Regional Suburbs**:
+  - **Included**: All 8 CTA "L" rapid transit lines and all 127 CTA city bus routes.
+  - **Known Gap**: Suburban bus routes outside Chicago city limits operated by **Pace Suburban Bus** and commuter rail operated by **Metra** are independent agencies.
+- **Washington D.C. Suburbs**:
+  - **Included**: All 6 WMATA Metrorail lines and all 85+ WMATA Metrobus routes serving DC, suburban Maryland, and Northern Virginia.
+  - **Known Gap**: County feeder networks such as Montgomery County **Ride On** (MD), Prince George's **TheBus** (MD), and **Fairfax Connector** (VA) are managed separately by respective counties.
 
 ---
 

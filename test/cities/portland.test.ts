@@ -2,13 +2,17 @@ import { describe, expect, it } from 'vitest';
 import { PortlandTriMetTransitAdapter } from '../../src/cities/portland.js';
 
 describe('PortlandTriMetTransitAdapter', () => {
-  it('should list MAX Light Rail routes', async () => {
+  it('should list MAX Light Rail and TriMet bus routes', async () => {
     const adapter = new PortlandTriMetTransitAdapter();
     const routes = await adapter.getRoutes();
-    expect(routes.length).toBeGreaterThanOrEqual(5);
+    expect(routes.length).toBeGreaterThanOrEqual(70);
     const blueLine = routes.find((r) => r.shortName === 'MAX Blue');
     expect(blueLine).toBeDefined();
     expect(blueLine?.type).toBe('light_rail');
+
+    const bus72 = routes.find((r) => r.id === '72');
+    expect(bus72).toBeDefined();
+    expect(bus72?.type).toBe('bus');
 
     const redLine = await adapter.getRoutes('Red');
     expect(redLine.some((r) => r.shortName === 'MAX Red')).toBe(true);

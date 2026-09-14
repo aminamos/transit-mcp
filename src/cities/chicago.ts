@@ -9,30 +9,9 @@ interface CtaStationDef {
   lon: number;
 }
 
-const CTA_L_LINES: TransitRoute[] = [
-  { id: 'Red', shortName: 'Red', longName: 'Red Line', agency: 'CTA', type: 'subway', color: '#c60c30', description: 'Howard to 95th/Dan Ryan via Subway' },
-  { id: 'Blue', shortName: 'Blue', longName: 'Blue Line', agency: 'CTA', type: 'subway', color: '#00a1de', description: "O'Hare Airport to Forest Park via Dearborn Subway" },
-  { id: 'Brn', shortName: 'Brown', longName: 'Brown Line', agency: 'CTA', type: 'subway', color: '#62361b', description: 'Kimball to Loop (Elevated)' },
-  { id: 'G', shortName: 'Green', longName: 'Green Line', agency: 'CTA', type: 'subway', color: '#009b3a', description: 'Harlem/Lake to Ashland/63rd & Cottage Grove' },
-  { id: 'Org', shortName: 'Orange', longName: 'Orange Line', agency: 'CTA', type: 'subway', color: '#f9461c', description: 'Midway Airport to Loop' },
-  { id: 'P', shortName: 'Purple', longName: 'Purple Line', agency: 'CTA', type: 'subway', color: '#522398', description: 'Linden to Howard & Loop Express' },
-  { id: 'Pink', shortName: 'Pink', longName: 'Pink Line', agency: 'CTA', type: 'subway', color: '#e27ea6', description: '54th/Cermak to Loop' },
-  { id: 'Y', shortName: 'Yellow', longName: 'Yellow Line (Skokie Swift)', agency: 'CTA', type: 'subway', color: '#f9e300', description: 'Dempster-Skokie to Howard' },
-  // Major frequent bus routes
-  { id: '1', shortName: '1', longName: 'Bronzeville/Union Station', agency: 'CTA', type: 'bus' },
-  { id: '4', shortName: '4', longName: 'Cottage Grove', agency: 'CTA', type: 'bus' },
-  { id: '8', shortName: '8', longName: 'Halsted', agency: 'CTA', type: 'bus' },
-  { id: '9', shortName: '9', longName: 'Ashland', agency: 'CTA', type: 'bus' },
-  { id: '20', shortName: '20', longName: 'Madison', agency: 'CTA', type: 'bus' },
-  { id: '22', shortName: '22', longName: 'Clark', agency: 'CTA', type: 'bus' },
-  { id: '29', shortName: '29', longName: 'State', agency: 'CTA', type: 'bus' },
-  { id: '36', shortName: '36', longName: 'Broadway', agency: 'CTA', type: 'bus' },
-  { id: '49', shortName: '49', longName: 'Western', agency: 'CTA', type: 'bus' },
-  { id: '66', shortName: '66', longName: 'Chicago', agency: 'CTA', type: 'bus' },
-  { id: '77', shortName: '77', longName: 'Belmont', agency: 'CTA', type: 'bus' },
-  { id: '147', shortName: '147', longName: 'Outer Drive Express', agency: 'CTA', type: 'bus' },
-  { id: '151', shortName: '151', longName: 'Sheridan', agency: 'CTA', type: 'bus' },
-];
+import { ALL_CTA_ROUTES } from './cta_routes.js';
+
+const CTA_L_LINES: TransitRoute[] = ALL_CTA_ROUTES;
 
 const CTA_L_STATIONS: CtaStationDef[] = [
   { mapId: '40380', name: 'Clark/Lake', lines: ['Blue', 'Brn', 'G', 'Org', 'Pink', 'P'], lat: 41.8857, lon: -87.6309 },
@@ -63,7 +42,7 @@ export class ChicagoCtaTransitAdapter implements CityTransitAdapter {
     name: 'Chicago',
     agency: 'CTA (Chicago Transit Authority)',
     state: 'IL',
-    modes: ['"L" Rapid Transit (Red, Blue, Brown, Green, Orange, Purple, Pink, Yellow)', 'Bus'],
+    modes: ['"L" Rapid Transit (Red, Blue, Brown, Green, Orange, Purple, Pink, Yellow)', 'Bus (127 CTA Bus Routes)'],
     features: {
       realtimeDepartures: true,
       routeStops: true,

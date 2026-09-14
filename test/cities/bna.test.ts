@@ -5,12 +5,16 @@ describe('WeGoNashvilleTransitAdapter', () => {
   it('should list and filter WeGo Star rail and bus routes', async () => {
     const adapter = new WeGoNashvilleTransitAdapter();
     const allRoutes = await adapter.getRoutes();
-    expect(allRoutes.length).toBeGreaterThan(5);
+    expect(allRoutes.length).toBeGreaterThanOrEqual(40);
 
     const star = allRoutes.find((r) => r.id === 'Star');
     expect(star).toBeDefined();
     expect(star?.type).toBe('rail');
     expect(star?.longName).toContain('WeGo Star');
+
+    const bus55 = allRoutes.find((r) => r.id === '55');
+    expect(bus55).toBeDefined();
+    expect(bus55?.type).toBe('bus');
 
     const filtered = await adapter.getRoutes('airport');
     expect(filtered.length).toBeGreaterThanOrEqual(1);

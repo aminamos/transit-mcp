@@ -5,12 +5,16 @@ describe('MartaTransitAdapter', () => {
   it('should list and filter MARTA rail and bus routes', async () => {
     const adapter = new MartaTransitAdapter();
     const allRoutes = await adapter.getRoutes();
-    expect(allRoutes.length).toBeGreaterThan(5);
+    expect(allRoutes.length).toBeGreaterThanOrEqual(90);
 
     const red = allRoutes.find((r) => r.id === 'Red');
     expect(red).toBeDefined();
     expect(red?.agency).toBe('MARTA');
     expect(red?.type).toBe('subway');
+
+    const bus110 = allRoutes.find((r) => r.id === '110');
+    expect(bus110).toBeDefined();
+    expect(bus110?.type).toBe('bus');
 
     const filtered = await adapter.getRoutes('airport');
     expect(filtered.length).toBeGreaterThanOrEqual(1);

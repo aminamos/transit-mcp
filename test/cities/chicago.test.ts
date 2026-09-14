@@ -5,10 +5,14 @@ describe('ChicagoCtaTransitAdapter', () => {
   it('should list Chicago L lines and buses', async () => {
     const adapter = new ChicagoCtaTransitAdapter();
     const routes = await adapter.getRoutes();
-    expect(routes.length).toBeGreaterThanOrEqual(8);
+    expect(routes.length).toBeGreaterThanOrEqual(130);
     const redLine = routes.find((r) => r.id === 'Red');
     expect(redLine).toBeDefined();
     expect(redLine?.type).toBe('subway');
+
+    const bus66 = routes.find((r) => r.id === '66');
+    expect(bus66).toBeDefined();
+    expect(bus66?.type).toBe('bus');
 
     const filtered = await adapter.getRoutes('blue');
     expect(filtered.some((r) => r.id === 'Blue')).toBe(true);
