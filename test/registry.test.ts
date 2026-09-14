@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { TransitRegistry } from '../src/registry.js';
+import { SUPPORTED_CITY_IDS } from '../src/types.js';
 
 describe('TransitRegistry', () => {
   const registry = new TransitRegistry();
@@ -13,6 +14,7 @@ describe('TransitRegistry', () => {
     expect(ids).toContain('sf_bart');
     expect(ids).toContain('chicago');
     expect(ids).toContain('portland');
+    expect(SUPPORTED_CITY_IDS).toHaveLength(5);
   });
 
   it('should resolve city by exact ID', () => {
@@ -38,5 +40,21 @@ describe('TransitRegistry', () => {
 
   it('should throw an informative error on unknown city', () => {
     expect(() => registry.getAdapter('atlantis')).toThrowError(/Unsupported city "atlantis"/);
+    expect(() => registry.getAdapter('zz')).toThrowError(/Unsupported city "zz"/);
+  });
+
+  it('should resolve city by prefix match', () => {
+    expect(registry.getAdapter('bost').info.id).toBe('boston');
+  });
+
+  it('should resolve city by substring match when length >= 3', () => {
+    expect(registry.getAdapter('cago').info.id).toBe('chicago');
+  });
+
+  it('should throw if matched alias points to missing adapter', () => {
+    const customRegistry = new TransitRegistry();
+    (customRegistry as any).adapters.delete('msp');
+    expect(() => customRegistry.getAdapter('msp')).toThrowError(/Unsupported city "msp"/);
   });
 });
+

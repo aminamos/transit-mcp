@@ -39,7 +39,7 @@ const TRIMET_STATIONS: TriMetStationDef[] = [
   { locId: '8347', name: 'Galleria / SW 10th Ave', lines: ['100', '90'], lat: 45.5199, lon: -122.6815 },
   { locId: '8382', name: 'Convention Center', lines: ['100', '90', '200'], lat: 45.5298, lon: -122.6617 },
   { locId: '9831', name: 'Sunset Transit Center', lines: ['100', '90'], lat: 45.5112, lon: -122.7594 },
-  { locId: '8340', name: 'Gresham Central Transit Center', lines: ['100'], lat: 45.4994, lon: -122.4319 },
+  { locId: '8340', name: 'Gresham Central Transit Center', lines: ['100', '999'], lat: 45.4994, lon: -122.4319 },
 ];
 
 export class PortlandTriMetTransitAdapter implements CityTransitAdapter {
@@ -66,7 +66,7 @@ export class PortlandTriMetTransitAdapter implements CityTransitAdapter {
     private customFetch: typeof fetch = fetch,
     appId?: string
   ) {
-    this.appId = appId || (typeof process !== 'undefined' ? process.env.TRIMET_APP_ID : undefined);
+    this.appId = appId || process.env.TRIMET_APP_ID;
   }
 
   async getRoutes(searchQuery?: string): Promise<TransitRoute[]> {
@@ -193,14 +193,17 @@ export class PortlandTriMetTransitAdapter implements CityTransitAdapter {
           const detours = data?.resultSet?.detour || [];
           const detourList = Array.isArray(detours) ? detours : [detours];
 
-          return detourList.map((d: any) => ({
-            id: String(d.id),
-            header: d.header || 'TriMet Service Detour',
-            description: d.desc || d.header,
-            severity: 'warning',
-            affectedRoutes: d.route ? [String(d.route)] : undefined,
-            updatedAt: d.begin,
-          }));
+          return detourList.map((d: any) => {
+            const header = d.header || 'TriMet Service Detour';
+            return {
+              id: String(d.id),
+              header,
+              description: d.desc || header,
+              severity: 'warning',
+              affectedRoutes: d.route ? [String(d.route)] : undefined,
+              updatedAt: d.begin,
+            };
+          });
         }
       } catch {
         // Fall back below

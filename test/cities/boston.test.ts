@@ -122,4 +122,226 @@ describe('BostonMbtaTransitAdapter', () => {
     expect(alerts[0].severity).toBe('severe');
     expect(alerts[0].affectedRoutes).toContain('Red');
   });
+
+  it('should handle API key configuration and header injection', async () => {
+    let capturedHeaders: any;
+    const mockFetch = (async (url: string, init?: any) => {
+      capturedHeaders = init?.headers;
+      return {
+        ok: true,
+        json: async () => ({ data: [] }),
+      };
+    }) as any;
+
+    const adapter = new BostonMbtaTransitAdapter(mockFetch, 'test-key-123');
+    await adapter.getRoutes();
+    expect(capturedHeaders['x-api-key']).toBe('test-key-123');
+  });
+
+  it('should handle getRoutes error and query filtering branches', async () => {
+    const mockFetch = (async (url: string) => {
+      if (url.includes('fail')) {
+        return { ok: false, status: 500, statusText: 'Internal Server Error' };
+      }
+      return {
+        ok: true,
+        json: async () => ({
+          data: [
+            { id: 'boat', type: 'route', attributes: { type: 4, short_name: '', long_name: '', description: 'Commuter boat' } },
+            { id: '1', type: 'route', attributes: { type: 3, short_name: '1', long_name: 'Mass Ave', description: '' } },
+          ],
+        }),
+      };
+    }) as any;
+
+    const failAdapter = new BostonMbtaTransitAdapter((async () => ({ ok: false, status: 500, statusText: 'Server Error' })) as any);
+    await expect(failAdapter.getRoutes()).rejects.toThrow(/Failed to fetch MBTA routes/);
+
+    const adapter = new BostonMbtaTransitAdapter(mockFetch);
+    const routes = await adapter.getRoutes('commuter');
+    expect(routes).toHaveLength(1);
+    expect(routes[0].type).toBe('ferry');
+    expect(routes[0].shortName).toBe('boat');
+    expect(routes[0].longName).toBe('boat');
+
+    const routesById = await adapter.getRoutes('1');
+    expect(routesById).toHaveLength(1);
+    expect(routesById[0].type).toBe('bus');
+
+    const emptyRoutes = await adapter.getRoutes('nonexistent');
+    expect(emptyRoutes).toHaveLength(0);
+  });
+
+  it('should handle getStops with direction parameter and non-place stop id', async () => {
+    let capturedUrl = '';
+    const mockFetch = (async (url: string) => {
+      capturedUrl = url;
+      if (url.includes('fail')) {
+        return { ok: false, status: 404 };
+      }
+      return {
+        ok: true,
+        json: async () => ({
+          data: [
+            { id: '1234', type: 'stop', attributes: { name: 'Stop 1234' } },
+          ],
+        }),
+      };
+    }) as any;
+
+    const adapter = new BostonMbtaTransitAdapter(mockFetch);
+    const stops = await adapter.getStops('1', 0);
+    expect(capturedUrl).toContain('filter[direction_id]=0');
+    expect(stops[0].parentStation).toBeUndefined();
+    expect(stops[0].code).toBe('1234');
+
+    await expect(adapter.getStops('fail')).rejects.toThrow(/Failed to fetch MBTA stops/);
+  });
+
+  it('should handle getDepartures edge cases (cancelled, outbound, missing times, error)', async () => {
+    const mockFetch = (async (url: string) => {
+      if (url.includes('fail')) {
+        return { ok: false, status: 500 };
+      }
+      return {
+        ok: true,
+        json: async () => ({
+          data: [
+            {
+              id: 'pred-due',
+              type: 'prediction',
+              attributes: {
+                arrival_time: null,
+                departure_time: new Date(Date.now() - 60000).toISOString(),
+                direction_id: 0,
+                status: 'CANCELLED',
+                schedule_relationship: 'CANCELLED',
+              },
+              relationships: {},
+            },
+            {
+              id: 'pred-notime',
+              type: 'prediction',
+              attributes: {
+                arrival_time: null,
+                departure_time: null,
+                direction_id: 1,
+                status: null,
+                schedule_relationship: null,
+              },
+              relationships: {
+                route: { data: { id: 'Orange' } },
+                trip: { data: { id: 'trip-unknown' } },
+              },
+            },
+          ],
+          included: [
+            { id: 'trip-not-a-trip', type: 'route' },
+            { id: 'trip-no-headsign', type: 'trip', attributes: {} },
+          ],
+        }),
+      };
+    }) as any;
+
+    const adapter = new BostonMbtaTransitAdapter(mockFetch);
+    await expect(adapter.getDepartures('fail')).rejects.toThrow(/Failed to fetch MBTA predictions/);
+
+    const deps = await adapter.getDepartures('place-north');
+    expect(deps).toHaveLength(2);
+    expect(deps[0].status).toBe('Cancelled');
+    expect(deps[0].countdownMinutes).toBe('Approaching');
+    expect(deps[0].direction).toBe('Outbound');
+    expect(deps[0].destination).toBe('Unknown');
+
+    expect(deps[1].status).toBe('Scheduled');
+    expect(deps[1].countdownMinutes).toBe('Unknown');
+    expect(deps[1].destination).toBe('Orange');
+    expect(deps[1].direction).toBe('Inbound');
+  });
+
+  it('should handle getAlerts without routeFilter, warning severity, and error', async () => {
+    let capturedUrl = '';
+    const mockFetch = (async (url: string) => {
+      capturedUrl = url;
+      if (url.includes('fail')) {
+        return { ok: false, status: 500 };
+      }
+      return {
+        ok: true,
+        json: async () => ({
+          data: [
+            {
+              id: 'alert-warn',
+              type: 'alert',
+              attributes: {
+                header: 'Warning header',
+                severity: 5,
+                service_effect: 'Delays',
+                url: 'https://mbta.com/alert',
+                informed_entity: [{}],
+              },
+            },
+            {
+              id: 'alert-info',
+              type: 'alert',
+              attributes: {
+                header: 'Info header',
+                severity: 2,
+              },
+            },
+          ],
+        }),
+      };
+    }) as any;
+
+    const adapter = new BostonMbtaTransitAdapter(mockFetch);
+    const alerts = await adapter.getAlerts();
+    expect(capturedUrl).not.toContain('filter[route]');
+    expect(alerts).toHaveLength(2);
+    expect(alerts[0].severity).toBe('warning');
+    expect(alerts[0].effect).toBe('Delays');
+    expect(alerts[0].description).toBe('Warning header');
+    expect(alerts[0].affectedRoutes).toBeUndefined();
+    expect(alerts[0].url).toBe('https://mbta.com/alert');
+
+    expect(alerts[1].severity).toBe('info');
+
+    const failAdapter = new BostonMbtaTransitAdapter((async () => ({ ok: false, status: 500 })) as any);
+    await expect(failAdapter.getAlerts()).rejects.toThrow(/Failed to fetch MBTA alerts/);
+  });
+
+  it('should read API key from process.env and handle undefined json.data in all methods', async () => {
+    const originalEnv = process.env.MBTA_API_KEY;
+    process.env.MBTA_API_KEY = 'env-api-key';
+    const mockFetch = (async () => ({
+      ok: true,
+      json: async () => ({}), // data is undefined
+    })) as any;
+
+    const adapter = new BostonMbtaTransitAdapter(mockFetch);
+    const routes = await adapter.getRoutes();
+    expect(routes).toEqual([]);
+
+    const stops = await adapter.getStops('1');
+    expect(stops).toEqual([]);
+
+    const deps = await adapter.getDepartures('place-sstat');
+    expect(deps).toEqual([]);
+
+    const alerts = await adapter.getAlerts();
+    expect(alerts).toEqual([]);
+
+    process.env.MBTA_API_KEY = originalEnv;
+
+    delete process.env.MBTA_API_KEY;
+    const noKeyAdapter = new BostonMbtaTransitAdapter(mockFetch);
+    expect((noKeyAdapter as any).apiKey).toBeUndefined();
+    if (originalEnv !== undefined) {
+      process.env.MBTA_API_KEY = originalEnv;
+    }
+  });
 });
+
+
+
+

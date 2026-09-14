@@ -1,6 +1,6 @@
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { createTransitMcpServer } from '../src/server.js';
 
 describe('Transit MCP Server', () => {
@@ -143,4 +143,110 @@ describe('Transit MCP Server', () => {
     await client.close();
     await server.close();
   });
+
+  it('should handle errors in list_supported_cities', async () => {
+    const mockRegistry = {
+      listSupportedCities: () => {
+        throw new Error('Database exploded');
+      },
+    } as any;
+    const server = createTransitMcpServer(mockRegistry);
+    const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
+    const client = new Client({ name: 'test-client', version: '1.0.0' }, { capabilities: {} });
+    await server.connect(serverTransport);
+    await client.connect(clientTransport);
+
+    const res = await client.callTool({ name: 'list_supported_cities', arguments: {} });
+    expect(res.isError).toBe(true);
+    expect((res.content[0] as any).text).toContain('Error listing cities: Database exploded');
+
+    await client.close();
+    await server.close();
+  });
+
+  it('should execute get_route_stops with direction and handle error', async () => {
+    const server = createTransitMcpServer();
+    const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
+    const client = new Client({ name: 'test-client', version: '1.0.0' }, { capabilities: {} });
+    await server.connect(serverTransport);
+    await client.connect(clientTransport);
+
+    const res = await client.callTool({
+      name: 'get_route_stops',
+      arguments: { city: 'portland', route_id: '100', direction: '1' },
+    });
+    expect(res.isError).toBeFalsy();
+    const data = JSON.parse((res.content[0] as any).text);
+    expect(data.direction).toBe('1');
+
+    const errRes = await client.callTool({
+      name: 'get_route_stops',
+      arguments: { city: 'unknown_city', route_id: '100' },
+    });
+    expect(errRes.isError).toBe(true);
+    expect((errRes.content[0] as any).text).toContain('Error fetching stops');
+
+    await client.close();
+    await server.close();
+  });
+
+  it('should handle error in get_departures', async () => {
+    const server = createTransitMcpServer();
+    const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
+    const client = new Client({ name: 'test-client', version: '1.0.0' }, { capabilities: {} });
+    await server.connect(serverTransport);
+    await client.connect(clientTransport);
+
+    const errRes = await client.callTool({
+      name: 'get_departures',
+      arguments: { city: 'unknown_city', stop_id: '1234' },
+    });
+    expect(errRes.isError).toBe(true);
+    expect((errRes.content[0] as any).text).toContain('Error fetching departures');
+
+    await client.close();
+    await server.close();
+  });
+
+  it('should execute get_service_alerts with route_id and handle error', async () => {
+    const server = createTransitMcpServer();
+    const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
+    const client = new Client({ name: 'test-client', version: '1.0.0' }, { capabilities: {} });
+    await server.connect(serverTransport);
+    await client.connect(clientTransport);
+
+    const res = await client.callTool({
+      name: 'get_service_alerts',
+      arguments: { city: 'portland', route_id: 'MAX Blue' },
+    });
+    expect(res.isError).toBeFalsy();
+    const data = JSON.parse((res.content[0] as any).text);
+    expect(data.filterRoute).toBe('MAX Blue');
+
+    const errRes = await client.callTool({
+      name: 'get_service_alerts',
+      arguments: { city: 'unknown_city' },
+    });
+    expect(errRes.isError).toBe(true);
+    expect((errRes.content[0] as any).text).toContain('Error fetching service alerts');
+
+    await client.close();
+    await server.close();
+  });
+
+  it('should run stdio server', async () => {
+    const { McpServer } = await import('@modelcontextprotocol/sdk/server/mcp.js');
+    const { runStdioServer } = await import('../src/server.js');
+    const connectSpy = vi.spyOn(McpServer.prototype, 'connect').mockResolvedValue(undefined);
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    await runStdioServer();
+
+    expect(connectSpy).toHaveBeenCalled();
+    expect(consoleErrorSpy).toHaveBeenCalledWith('Transit MCP Server running on stdio');
+
+    connectSpy.mockRestore();
+    consoleErrorSpy.mockRestore();
+  });
 });
+

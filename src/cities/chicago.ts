@@ -87,9 +87,7 @@ export class ChicagoCtaTransitAdapter implements CityTransitAdapter {
       ignoreAttributes: false,
       attributeNamePrefix: '@_',
     });
-    this.trainApiKey =
-      trainApiKey ||
-      (typeof process !== 'undefined' ? process.env.CTA_TRAIN_API_KEY : undefined);
+    this.trainApiKey = trainApiKey || process.env.CTA_TRAIN_API_KEY;
   }
 
   async getRoutes(searchQuery?: string): Promise<TransitRoute[]> {

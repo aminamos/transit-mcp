@@ -67,7 +67,7 @@ export class SfBartTransitAdapter implements CityTransitAdapter {
   ) {
     this.apiKey =
       apiKey ||
-      (typeof process !== 'undefined' && process.env.BART_API_KEY) ||
+      process.env.BART_API_KEY ||
       'MW9S-E7SL-26DU-VV8V';
   }
 

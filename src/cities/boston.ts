@@ -93,7 +93,7 @@ export class BostonMbtaTransitAdapter implements CityTransitAdapter {
     private customFetch: typeof fetch = fetch,
     private apiKey?: string
   ) {
-    this.apiKey = apiKey || (typeof process !== 'undefined' ? process.env.MBTA_API_KEY : undefined);
+    this.apiKey = apiKey || process.env.MBTA_API_KEY;
   }
 
   private getHeaders(): Record<string, string> {

@@ -13,9 +13,9 @@ export * from './cities/sf_bart.js';
 export * from './cities/chicago.js';
 export * from './cities/portland.js';
 
-async function main() {
+export async function main() {
   const args = process.argv.slice(2);
-  const isBinaryMcp = process.argv[1] && process.argv[1].endsWith('transit-mcp');
+  const isBinaryMcp = Boolean(process.argv[1] && process.argv[1].endsWith('transit-mcp'));
   const wantsMcp = args.length === 0 && (!process.stdin.isTTY || isBinaryMcp);
 
   if (wantsMcp) {
@@ -27,6 +27,7 @@ async function main() {
   await cli.parseAsync(process.argv);
 }
 
+/* v8 ignore start */
 // Only execute main if this file is run as the direct script
 if (
   import.meta.url === `file://${process.argv[1]}` ||
@@ -38,3 +39,5 @@ if (
     process.exit(1);
   });
 }
+/* v8 ignore stop */
+
