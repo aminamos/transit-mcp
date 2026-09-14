@@ -1,0 +1,57 @@
+{
+  "name": "transit-mcp",
+  "version": "1.0.0",
+  "description": "Multi-city US Public Transit Model Context Protocol (MCP) server & CLI supporting Minneapolis-St. Paul, Boston, SF Bay Area, Chicago, and Portland.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "transit-mcp": "./dist/index.js",
+    "transit": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build",
+    "start": "node dist/index.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "transit",
+    "public-transit",
+    "bus",
+    "subway",
+    "train",
+    "metro-transit",
+    "mbta",
+    "bart",
+    "cta",
+    "trimet",
+    "cli"
+  ],
+  "author": "Amin",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "commander": "^13.1.0",
+    "fast-xml-parser": "^5.0.8",
+    "picocolors": "^1.1.1",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.9",
+    "typescript": "^5.8.2",
+    "vitest": "^3.0.7"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
