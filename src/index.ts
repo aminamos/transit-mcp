@@ -16,6 +16,10 @@ export * from './cities/dc.js';
 export * from './cities/atl.js';
 export * from './cities/mia.js';
 export * from './cities/bna.js';
+export * from './cities/sf_muni.js';
+export * from './cities/ac_transit.js';
+export * from './cities/ride_on.js';
+export * from './cities/fairfax_connector.js';
 
 export async function main() {
   const args = process.argv.slice(2);

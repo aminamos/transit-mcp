@@ -5,9 +5,9 @@ import { SUPPORTED_CITY_IDS } from '../src/types.js';
 describe('TransitRegistry', () => {
   const registry = new TransitRegistry();
 
-  it('should list 9 supported cities', () => {
+  it('should list 13 supported cities', () => {
     const cities = registry.listSupportedCities();
-    expect(cities).toHaveLength(9);
+    expect(cities).toHaveLength(13);
     const ids = cities.map((c) => c.id);
     expect(ids).toContain('msp');
     expect(ids).toContain('dc');
@@ -18,7 +18,11 @@ describe('TransitRegistry', () => {
     expect(ids).toContain('sf_bart');
     expect(ids).toContain('chicago');
     expect(ids).toContain('portland');
-    expect(SUPPORTED_CITY_IDS).toHaveLength(9);
+    expect(ids).toContain('sf_muni');
+    expect(ids).toContain('ac_transit');
+    expect(ids).toContain('ride_on');
+    expect(ids).toContain('fairfax_connector');
+    expect(SUPPORTED_CITY_IDS).toHaveLength(13);
   });
 
   it('should resolve city by exact ID', () => {
@@ -27,6 +31,10 @@ describe('TransitRegistry', () => {
     expect(registry.getAdapter('sf_bart').info.id).toBe('sf_bart');
     expect(registry.getAdapter('chicago').info.id).toBe('chicago');
     expect(registry.getAdapter('portland').info.id).toBe('portland');
+    expect(registry.getAdapter('sf_muni').info.id).toBe('sf_muni');
+    expect(registry.getAdapter('ac_transit').info.id).toBe('ac_transit');
+    expect(registry.getAdapter('ride_on').info.id).toBe('ride_on');
+    expect(registry.getAdapter('fairfax_connector').info.id).toBe('fairfax_connector');
   });
 
   it('should resolve city by common aliases', () => {
@@ -40,6 +48,13 @@ describe('TransitRegistry', () => {
     expect(registry.getAdapter('cta').info.id).toBe('chicago');
     expect(registry.getAdapter('trimet').info.id).toBe('portland');
     expect(registry.getAdapter('pdx').info.id).toBe('portland');
+    expect(registry.getAdapter('muni').info.id).toBe('sf_muni');
+    expect(registry.getAdapter('actransit').info.id).toBe('ac_transit');
+    expect(registry.getAdapter('eastbay').info.id).toBe('ac_transit');
+    expect(registry.getAdapter('rideon').info.id).toBe('ride_on');
+    expect(registry.getAdapter('montgomery').info.id).toBe('ride_on');
+    expect(registry.getAdapter('fairfax').info.id).toBe('fairfax_connector');
+    expect(registry.getAdapter('connector').info.id).toBe('fairfax_connector');
   });
 
   it('should throw an informative error on unknown city', () => {

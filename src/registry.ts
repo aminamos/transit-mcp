@@ -7,6 +7,10 @@ import { WmataTransitAdapter } from './cities/dc.js';
 import { MartaTransitAdapter } from './cities/atl.js';
 import { MiamiDadeTransitAdapter } from './cities/mia.js';
 import { WeGoNashvilleTransitAdapter } from './cities/bna.js';
+import { SfMuniTransitAdapter } from './cities/sf_muni.js';
+import { AcTransitAdapter } from './cities/ac_transit.js';
+import { MontgomeryRideOnTransitAdapter } from './cities/ride_on.js';
+import { FairfaxConnectorTransitAdapter } from './cities/fairfax_connector.js';
 import { CityTransitAdapter, SupportedCityInfo } from './types.js';
 
 export class TransitRegistry {
@@ -23,6 +27,10 @@ export class TransitRegistry {
     this.register(new MartaTransitAdapter());
     this.register(new MiamiDadeTransitAdapter());
     this.register(new WeGoNashvilleTransitAdapter());
+    this.register(new SfMuniTransitAdapter());
+    this.register(new AcTransitAdapter());
+    this.register(new MontgomeryRideOnTransitAdapter());
+    this.register(new FairfaxConnectorTransitAdapter());
   }
 
   register(adapter: CityTransitAdapter): void {

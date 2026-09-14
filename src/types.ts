@@ -1,6 +1,33 @@
-export type CityId = 'msp' | 'boston' | 'sf_bart' | 'chicago' | 'portland' | 'dc' | 'atl' | 'mia' | 'bna';
+export type CityId =
+  | 'msp'
+  | 'boston'
+  | 'sf_bart'
+  | 'chicago'
+  | 'portland'
+  | 'dc'
+  | 'atl'
+  | 'mia'
+  | 'bna'
+  | 'sf_muni'
+  | 'ac_transit'
+  | 'ride_on'
+  | 'fairfax_connector';
 
-export const SUPPORTED_CITY_IDS: readonly CityId[] = ['msp', 'boston', 'sf_bart', 'chicago', 'portland', 'dc', 'atl', 'mia', 'bna'] as const;
+export const SUPPORTED_CITY_IDS: readonly CityId[] = [
+  'msp',
+  'boston',
+  'sf_bart',
+  'chicago',
+  'portland',
+  'dc',
+  'atl',
+  'mia',
+  'bna',
+  'sf_muni',
+  'ac_transit',
+  'ride_on',
+  'fairfax_connector',
+] as const;
 
 export interface SupportedCityInfo {
   id: CityId;

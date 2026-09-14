@@ -39,7 +39,7 @@ export function createCli(registry: TransitRegistry = new TransitRegistry()): Co
   program
     .command('routes [query]')
     .description('List transit routes for a specific city')
-    .requiredOption('-c, --city <city>', 'City identifier (e.g. msp, boston, sf_bart, chicago, portland, dc, atl, mia, bna)')
+    .requiredOption('-c, --city <city>', 'City identifier (e.g. msp, boston, sf_bart, chicago, portland, dc, atl, mia, bna, sf_muni, ac_transit, ride_on, fairfax_connector)')
     .action(async (query: string | undefined, options: { city: string }) => {
       try {
         const adapter = registry.getAdapter(options.city);
@@ -78,7 +78,7 @@ export function createCli(registry: TransitRegistry = new TransitRegistry()): Co
   program
     .command('departures <stop>')
     .description('Get real-time departures and live countdowns for a stop or station')
-    .requiredOption('-c, --city <city>', 'City identifier (e.g. msp, boston, sf_bart, chicago, portland)')
+    .requiredOption('-c, --city <city>', 'City identifier (e.g. msp, boston, sf_bart, chicago, portland, dc, atl, mia, bna, sf_muni, ac_transit, ride_on, fairfax_connector)')
     .action(async (stop: string, options: { city: string }) => {
       try {
         const adapter = registry.getAdapter(options.city);
@@ -128,7 +128,7 @@ export function createCli(registry: TransitRegistry = new TransitRegistry()): Co
   program
     .command('alerts [route]')
     .description('Get active transit service alerts, detours, and disruptions')
-    .requiredOption('-c, --city <city>', 'City identifier (e.g. msp, boston, sf_bart, chicago, portland)')
+    .requiredOption('-c, --city <city>', 'City identifier (e.g. msp, boston, sf_bart, chicago, portland, dc, atl, mia, bna, sf_muni, ac_transit, ride_on, fairfax_connector)')
     .action(async (route: string | undefined, options: { city: string }) => {
       try {
         const adapter = registry.getAdapter(options.city);

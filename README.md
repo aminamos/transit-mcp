@@ -1,6 +1,6 @@
 # transit-mcp 🚊
 
-> Multi-city US Public Transit **Model Context Protocol (MCP)** server & interactive **CLI** supporting **9 major metro areas**: **Minneapolis-St. Paul (Metro Transit)**, **Boston (MBTA)**, **SF Bay Area (BART)**, **Chicago (CTA)**, **Portland (TriMet)**, **Washington D.C. (WMATA)**, **Atlanta (MARTA)**, **Miami (Miami-Dade Transit)**, and **Nashville (WeGo)**.
+> Multi-city US Public Transit **Model Context Protocol (MCP)** server & interactive **CLI** supporting **13 major metro systems and county networks**: **Minneapolis-St. Paul (Metro Transit)**, **Boston (MBTA)**, **SF Bay Area (BART)**, **San Francisco (Muni)**, **East Bay (AC Transit)**, **Chicago (CTA)**, **Portland (TriMet)**, **Washington D.C. (WMATA)**, **Montgomery County (Ride On)**, **Fairfax County (Connector)**, **Atlanta (MARTA)**, **Miami (Miami-Dade Transit)**, and **Nashville (WeGo)**.
 
 Connect any AI assistant (Claude Desktop, Cursor, Antigravity, Claude Code, Windsurf) to live public transit schedules, real-time vehicle countdowns, platform assignments, route stops, and active service disruption alerts.
 
@@ -15,28 +15,32 @@ Connect any AI assistant (Claude Desktop, Cursor, Antigravity, Claude Code, Wind
 | **Chicago** | `chicago` | CTA | "L" Subway & Elevated (Red, Blue, Brn, G, Org, Pink, P, Y) | 100% (All 127 CTA bus routes) | ✅ Headway / Live | ✅ Live XML | Open alerts & system feeds (`transitchicago.com`) |
 | **Portland** | `portland` | TriMet | MAX Light Rail, Portland Streetcar, WES Rail | 100% (All 80+ TriMet bus routes) | ✅ Headway / Live | ✅ Live | Public TriMet feeds (`developer.trimet.org`) |
 | **Washington D.C.** | `dc` | WMATA | Metrorail (Red, Blue, Orange, Silver, Green, Yellow) | 100% (All 85+ Metrobus routes in DC/MD/VA) | ✅ Live / Scheduled | ✅ Live Incidents | WMATA API (`api.wmata.com`) |
+| **Montgomery County (MD)** | `ride_on` | MCDOT Ride On | Flash BRT (Orange, Blue), Ride On extRa (101) | 100% (All 60+ Ride On local & express lines) | ✅ Live / Scheduled | ✅ Live | MCDOT Open Data / Scheduled Headways |
+| **Fairfax County (VA)** | `fairfax_connector` | FCDOT Connector | Express Bus (I-66/I-495 HOV), Metro Feeders | 100% (All 45+ Fairfax Connector lines) | ✅ Live / Scheduled | ✅ Live | FCDOT Open Data / Scheduled Headways |
+| **San Francisco** | `sf_muni` | SFMTA (Muni) | Muni Metro (J, K, L, M, N, T), Cable Cars, Streetcars (E, F) | 100% (All 55+ Muni Rapid, trolleybus, & local buses) | ✅ Live / Scheduled | ✅ Live | 511.org REST API / Scheduled Headways |
+| **East Bay (Oakland / Berkeley)** | `ac_transit` | AC Transit | Tempo BRT (Line 1T), Transbay Express Buses | 100% (All 70+ Transbay, East Bay local, & All-Nighter buses) | ✅ Live / Scheduled | ✅ Live | AC Transit REST API / Scheduled Headways |
 | **Atlanta** | `atl` | MARTA | Heavy Rail (Red, Gold, Blue, Green), Atlanta Streetcar | 100% (All 95+ MARTA bus routes) | ✅ Live / Scheduled | ✅ Live | MARTA Realtime API (`itsmarta.com`) |
 | **Miami** | `mia` | Miami-Dade Transit | Metrorail (Orange, Green), Metromover (3 loops) | 100% (All 80+ Metrobus routes) | ✅ Scheduled Headways | ✅ Live | MDT Open Data feeds (`miamidade.gov`) |
 | **Nashville** | `bna` | WeGo Public Transit | WeGo Star Commuter Rail | 100% (All 40+ WeGo bus & BRT Lite routes) | ✅ Scheduled Headways | ✅ Live | WeGo Public Transit (`wegotransit.com`) |
-| **SF Bay Area** | `sf_bart` | BART | Heavy Rail / Rapid Transit, OAK Airport Connector | Rail only *(See known gaps below)* | ✅ Live ETD | ✅ Live BSA | Open REST API with universal key |
+| **SF Bay Area** | `sf_bart` | BART | Heavy Rail / Rapid Transit, OAK Airport Connector | Rail network (See Muni & AC Transit for regional buses) | ✅ Live ETD | ✅ Live BSA | Open REST API with universal key |
 
 ### 🚌 Bus Coverage & Known Regional Agency Gaps
 
-Every supported municipal transit agency provides **100% comprehensive bus route coverage** across all active lines. When working across metropolitan areas, please note the following agency boundaries:
+Every supported municipal transit agency provides **100% comprehensive bus route coverage** across all active lines. When working across metropolitan areas, note the following agency divisions:
 
-- **San Francisco Bay Area (`sf_bart`)**:
-  - **Included**: All 5 BART heavy rail lines and the BART-to-OAK Automated Airport Guideway.
-  - **Known Gap**: BART is strictly a regional rail authority and does not operate bus routes. Local bus transit in the San Francisco Bay Area is operated by independent municipal authorities:
-    - **SF Muni (SFMTA)**: San Francisco city buses, trolleybuses, and historic streetcars/cable cars.
-    - **AC Transit**: Alameda-Contra Costa bus network serving the East Bay (Oakland, Berkeley, Fremont).
-    - **SamTrans / VTA**: San Mateo and Santa Clara County buses.
-    - *Roadmap*: Dedicated `sf_muni` and `ac_transit` adapters are tracked for future addition.
+- **San Francisco Bay Area**:
+  - **BART (`sf_bart`)**: Regional rapid rail spine connecting San Francisco, East Bay, San Mateo, and San Jose.
+  - **SF Muni (`sf_muni`)**: Complete San Francisco municipal bus, trolleybus, Muni Metro light rail, historic streetcar, and cable car network.
+  - **AC Transit (`ac_transit`)**: Complete East Bay municipal bus network, Tempo 1T BRT corridor, Transbay express network into Salesforce Transit Center, and All-Nighter service.
+  - **Known External Gaps**: Regional suburban carriers **SamTrans** (San Mateo) and **VTA** (Santa Clara / Silicon Valley) remain independent county agencies.
+- **Washington D.C. Capital Region**:
+  - **WMATA (`dc`)**: Regional Metrorail rapid transit system and interstate Metrobus routes across DC, Maryland, and Virginia.
+  - **Montgomery County Ride On (`ride_on`)**: Full Montgomery County (MD) feeder network, Flash BRT corridors, and Ride On extRa express lines.
+  - **Fairfax Connector (`fairfax_connector`)**: Full Fairfax County (VA) feeder network, I-66/I-495 Express Lanes buses, and Reston/Tysons Silver Line feeders.
+  - **Known External Gaps**: Prince George's County **TheBus** (MD) and City of Alexandria **DASH** (VA) operate as separate municipal agencies.
 - **Chicago Regional Suburbs**:
-  - **Included**: All 8 CTA "L" rapid transit lines and all 127 CTA city bus routes.
-  - **Known Gap**: Suburban bus routes outside Chicago city limits operated by **Pace Suburban Bus** and commuter rail operated by **Metra** are independent agencies.
-- **Washington D.C. Suburbs**:
-  - **Included**: All 6 WMATA Metrorail lines and all 85+ WMATA Metrobus routes serving DC, suburban Maryland, and Northern Virginia.
-  - **Known Gap**: County feeder networks such as Montgomery County **Ride On** (MD), Prince George's **TheBus** (MD), and **Fairfax Connector** (VA) are managed separately by respective counties.
+  - **CTA (`chicago`)**: All 8 CTA "L" rapid transit lines and all 127 CTA city bus routes.
+  - **Known External Gaps**: Suburban buses outside Chicago city limits operated by **Pace Suburban Bus** and commuter rail operated by **Metra** are independent agencies.
 
 ---
 
@@ -256,6 +260,10 @@ All supported cities function out-of-the-box using official public endpoints. Fo
 | `CTA_TRAIN_API_KEY` | CTA (Chicago) | Direct CTA Train Tracker GPS hardware feed | None (Uses scheduled headways + open XML alerts) |
 | `TRIMET_APP_ID` | TriMet (Portland) | Direct developer.trimet.org live arrivals feed | None (Uses scheduled headways + open feeds) |
 | `WMATA_API_KEY` | WMATA (DC) | Direct WMATA Developer API key | None (Uses scheduled headways & public advisories) |
+| `RIDE_ON_API_KEY` | Ride On (Montgomery Co, MD) | Direct Montgomery County Open Data live predictions | None (Uses high-frequency scheduled headways) |
+| `FAIRFAX_API_KEY` | Fairfax Connector (VA) | Direct Fairfax County Connector predictions feed | None (Uses high-frequency scheduled headways) |
+| `MUNI_API_KEY` | SF Muni (SFMTA) | Direct 511.org StopMonitoring live prediction feed | None (Uses high-frequency scheduled headways) |
+| `ACTRANSIT_API_KEY` | AC Transit (East Bay) | Direct AC Transit actrealtime prediction feed | None (Uses high-frequency scheduled headways) |
 | `MARTA_API_KEY` | MARTA (Atlanta) | Direct MARTA Realtime REST API key | None (Uses scheduled headways & public feeds) |
 
 ---
@@ -274,9 +282,14 @@ transit-mcp/
 │       ├── msp.ts            # Minneapolis-St. Paul (Metro Transit NexTrip v2)
 │       ├── boston.ts         # Boston (MBTA v3 REST API)
 │       ├── sf_bart.ts        # SF Bay Area (BART REST API)
+│       ├── sf_muni.ts        # San Francisco (SFMTA Muni Metro, streetcars, buses)
+│       ├── ac_transit.ts     # East Bay (AC Transit Tempo BRT, Transbay buses)
 │       ├── chicago.ts        # Chicago (CTA open XML alerts & 'L' system)
+│       ├── cta_routes.ts     # Complete Chicago CTA 127 bus routes dictionary
 │       ├── portland.ts       # Portland (TriMet MAX & Streetcar)
 │       ├── dc.ts             # Washington D.C. (WMATA Metrorail & Metrobus)
+│       ├── ride_on.ts        # Montgomery County (Ride On Flash BRT & buses)
+│       ├── fairfax_connector.ts # Fairfax County (Connector express & Metro feeders)
 │       ├── atl.ts            # Atlanta (MARTA Rail & Streetcar)
 │       ├── mia.ts            # Miami (Miami-Dade Metrorail & Metromover)
 │       └── bna.ts            # Nashville (WeGo Star & BRT Lite)
